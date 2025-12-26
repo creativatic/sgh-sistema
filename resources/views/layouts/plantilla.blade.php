@@ -396,11 +396,39 @@
 
                         {{-- Expediente --}}
                         <li class="nav-item">
-                            <a class="nav-link menu-link {{ request()->is('expediente*') ? 'active' : '' }}" 
-                            href="{{ route('expediente.index') }}">
-                                <i class="ri-file-list-line"></i> <span>Expediente</span>
+                            <a class="nav-link menu-link {{ request()->is('expediente*') || request()->is('expediente-pagos*') ? 'active' : '' }}"
+                            href="#sidebarExpediente"
+                            data-bs-toggle="collapse"
+                            role="button"
+                            aria-expanded="false"
+                            aria-controls="sidebarExpediente">
+                                <i class="ri-file-list-line"></i>
+                                <span>Expediente</span>
                             </a>
+
+                            <div class="collapse menu-dropdown" id="sidebarExpediente">
+                                <ul class="nav nav-sm flex-column">
+
+                                    {{-- Expediente Principal --}}
+                                    <li class="nav-item">
+                                        <a href="{{ route('expediente.index') }}"
+                                        class="nav-link {{ request()->is('expediente') || request()->is('expediente/*') ? 'active' : '' }}">
+                                            Expediente Principal
+                                        </a>
+                                    </li>
+
+                                    {{-- Expediente Pagos --}}
+                                    <li class="nav-item">
+                                        <a href="{{ route('expediente_pagos.index') }}"
+                                        class="nav-link {{ request()->is('expediente-pagos*') ? 'active' : '' }}">
+                                            Expediente Pagos
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </div>
                         </li>
+
 
                         {{-- TISUR --}}
                         <li class="nav-item">

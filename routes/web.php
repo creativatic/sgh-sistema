@@ -16,6 +16,7 @@ use App\Http\Controllers\QrTisurController;
 use App\Http\Controllers\DetalleProgramacionController;
 use App\Http\Controllers\TisurController;
 use App\Http\Controllers\ExpedienteController;
+use App\Http\Controllers\ExpedientePagoController;
 use App\Http\Controllers\SeguimientoController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\ProveedorController;
@@ -85,12 +86,23 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/expediente/{id}', [ExpedienteController::class, 'show'])->name('expediente.show');
         Route::get('/expediente/{id}/edit', [ExpedienteController::class, 'edit'])->name('expediente.edit');
         Route::get('/expediente/precio-tn', [ExpedienteController::class, 'getPrecioTn']);
-        
+
         Route::get('/expedientes/autocomplete-tisur', [ExpedienteController::class, 'autocompleteTisur']);
         Route::get('/expedientes/tisur/{id}', [ExpedienteController::class, 'obtenerTisur']);
 
         // Expediente
         Route::resource('expediente', ExpedienteController::class);
+
+        // ===============================
+        // EXPEDIENTE PAGOS
+        // ===============================
+        Route::prefix('expediente-pagos')->name('expediente_pagos.')->group(function () {
+
+            Route::get('/', [ExpedientePagoController::class, 'index'])->name('index');
+            Route::get('/{id}/edit', [ExpedientePagoController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [ExpedientePagoController::class, 'update'])->name('update');
+        });
+
         
         //  Seguimiento
         Route::resource('seguimientos', SeguimientoController::class)->except(['show']);
