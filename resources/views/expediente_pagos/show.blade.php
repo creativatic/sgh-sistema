@@ -75,7 +75,7 @@
                         <td id="show_fecha_carga"></td>
                     </tr>
                     <tr>
-                        <th>Depósito a Proveer</th>
+                        <th>Depósito a Proveer S/.</th>
                         <td id="show_deposito"></td>
                     </tr>
                     <tr>

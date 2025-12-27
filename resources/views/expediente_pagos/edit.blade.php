@@ -61,7 +61,7 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label class="form-label fw-bold text-danger small">Depósito a Proveer</label>
+                        <label class="form-label fw-bold text-danger small">Depósito a Proveer S/.</label>
                         <input type="text" id="view_deposito" class="form-control fw-bold border-danger bg-light text-danger" readonly>
                     </div>
                 </div>

@@ -11,15 +11,19 @@ class ExpedientePagoController extends Controller
 {
     public function index()
     {
-        $programaciones = Programacion::with([
-            'seguimiento',
-            'detalleProgramacion',
-            'expedientes.tisur',
-            'proveedor.unidades.conductores'
-        ])
-        ->where('conformidad_adelanto', 'Ok')
-        ->latest()
-        ->paginate(10);
+        $programaciones = Programacion::query()
+            ->leftJoin('expedientes', 'expedientes.programacion_id', '=', 'programacions.id')
+            ->with([
+                'seguimiento',
+                'detalleProgramacion',
+                'expedientes.tisur',
+                'proveedor.unidades.conductores'
+            ])
+            ->where('conformidad_adelanto', 'Ok')
+            ->orderByRaw('expedientes.id IS NULL ASC') // ✅ PRIORIDAD
+            ->orderBy('programacions.created_at', 'DESC')
+            ->select('programacions.*') // ⚠️ IMPORTANTE
+            ->paginate(10);
 
         return view('expediente_pagos.index', compact('programaciones'));
     }
