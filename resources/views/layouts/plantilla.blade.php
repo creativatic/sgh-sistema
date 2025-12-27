@@ -371,7 +371,7 @@
                                         <a href="{{ route('adelantos.index') }}" 
                                         class="nav-link {{ request()->is('adelantos*') ? 'active' : '' }}" 
                                         data-key="t-listado">
-                                            Adelantos
+                                            Pago de Adelantos
                                         </a>
                                     </li>
 

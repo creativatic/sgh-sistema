@@ -43,6 +43,7 @@ class Expediente extends Model
         'conformidad_exped',
         'grupo_carguio',
         'archivo',
+        'archivo_comprobante_pago',
         'frente',
         'glosa_bancos',
         'comentarios',

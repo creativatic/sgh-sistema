@@ -32,6 +32,7 @@ return new class extends Migration {
             $table->date('fecha_carga')->nullable();
             $table->string('conformidad_exped', 100)->nullable();
             $table->string('archivo')->nullable();
+            $table->string('archivo_comprobante_pago')->nullable();
 
             // Campos opcionales adicionales de control
             $table->text('comentarios')->nullable();

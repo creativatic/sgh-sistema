@@ -15,17 +15,37 @@ class ExpedienteController extends Controller
     /**
      * Mostrar la lista de expedientes y programaciones filtradas.
      */
-    public function index()
+    public function index(Request $request)
     {
-       $programaciones = Programacion::with([
+        $search = $request->input('search');
+
+        $programaciones = Programacion::with([
             'seguimiento',
             'detalleProgramacion',
             'expedientes.tisur',
             'proveedor.unidades.conductores'
         ])
-            ->where('conformidad_adelanto', 'Ok')
-            ->latest()
-            ->paginate(10);
+        ->where('conformidad_adelanto', 'Ok')
+        ->when($search, function ($query) use ($search) {
+
+            $query->where(function ($q) use ($search) {
+
+                // 🔍 Buscar por Razón Social Transporte
+                $q->whereHas('proveedor', function ($sub) use ($search) {
+                    $sub->where('razon_social', 'LIKE', "%{$search}%");
+                })
+
+                // 🔍 Buscar por Placa Tracto
+                ->orWhereHas('proveedor.unidades', function ($sub) use ($search) {
+                    $sub->where('placa_tracto', 'LIKE', "%{$search}%");
+                });
+
+            });
+
+        })
+        ->latest()
+        ->paginate(10)
+        ->withQueryString(); // 🔥 mantiene el search en la paginación
 
         $tisurIdsAsociados = Expediente::pluck('tisur_id')->filter()->all();
         $tisurs = Tisur::whereNotIn('id', $tisurIdsAsociados)->get();
@@ -33,6 +53,7 @@ class ExpedienteController extends Controller
 
         return view('expediente.index', compact('programaciones', 'tisurs', 'detalles'));
     }
+
 
     /**
      * Formulario para crear expediente.

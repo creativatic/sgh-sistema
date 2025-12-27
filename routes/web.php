@@ -86,7 +86,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/expediente/{id}', [ExpedienteController::class, 'show'])->name('expediente.show');
         Route::get('/expediente/{id}/edit', [ExpedienteController::class, 'edit'])->name('expediente.edit');
         Route::get('/expediente/precio-tn', [ExpedienteController::class, 'getPrecioTn']);
-
+        Route::get('/expediente', [ExpedienteController::class, 'index'])->name('expediente.index');
         Route::get('/expedientes/autocomplete-tisur', [ExpedienteController::class, 'autocompleteTisur']);
         Route::get('/expedientes/tisur/{id}', [ExpedienteController::class, 'obtenerTisur']);
 
@@ -96,13 +96,14 @@ Route::middleware(['auth'])->group(function () {
         // ===============================
         // EXPEDIENTE PAGOS
         // ===============================
+        // C:\laragon\www\sistema-sgh-1.4\routes\web.php
         Route::prefix('expediente-pagos')->name('expediente_pagos.')->group(function () {
-
             Route::get('/', [ExpedientePagoController::class, 'index'])->name('index');
+            Route::get('/{id}', [ExpedientePagoController::class, 'show'])->name('show');
             Route::get('/{id}/edit', [ExpedientePagoController::class, 'edit'])->name('edit');
-            Route::put('/{id}', [ExpedientePagoController::class, 'update'])->name('update');
+            // CAMBIA ESTO:
+            Route::put('/{id}', [ExpedientePagoController::class, 'update'])->name('update'); 
         });
-
         
         //  Seguimiento
         Route::resource('seguimientos', SeguimientoController::class)->except(['show']);

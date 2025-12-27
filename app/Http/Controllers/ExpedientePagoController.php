@@ -4,16 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Expediente;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use App\Models\Programacion;
-
+use Illuminate\Support\Facades\DB;
 
 class ExpedientePagoController extends Controller
 {
-    /**
-     * Listado de expedientes para contabilidad
-     */
     public function index()
     {
         $programaciones = Programacion::with([
@@ -28,13 +23,17 @@ class ExpedientePagoController extends Controller
 
         return view('expediente_pagos.index', compact('programaciones'));
     }
+
     /**
-     * Obtener datos del expediente para editar (modal / onclick)
+     * Se unificaron las cargas para que SHOW y EDIT tengan la misma data
      */
-    public function edit($id)
+    public function show($id)
     {
-        $expediente = Expediente::with(['programacion', 'tisur'])
-            ->findOrFail($id);
+        $expediente = Expediente::with([
+            'programacion.detalleProgramacion',
+            'programacion.proveedor.unidades',
+            'tisur'
+        ])->findOrFail($id);
 
         return response()->json([
             'success' => true,
@@ -42,45 +41,53 @@ class ExpedientePagoController extends Controller
         ]);
     }
 
-    /**
-     * Actualizar datos de pago del expediente
-     */
+    public function edit($id)
+    {
+        // CAMBIO CLAVE: Agregamos las relaciones profundas para el proveedor y sus unidades
+        $expediente = Expediente::with([
+            'programacion.proveedor.unidades', // Para Razón Social, RUC y Placa
+            'programacion.detalleProgramacion', // Para el Frente
+            'tisur' // Para el N° de Ticket
+        ])->findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'data' => $expediente
+        ]);
+    }
+
     public function update(Request $request, $id)
     {
         $request->validate([
             'fecha_pago'   => 'nullable|date',
             'comentarios'  => 'nullable|string|max:500',
-            'archivo'      => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120', // 5MB
+            'archivo'      => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:20480',
         ]);
-
-        DB::beginTransaction();
 
         try {
             $expediente = Expediente::findOrFail($id);
-
-            // Fecha de pago
             $expediente->fecha_pago = $request->fecha_pago;
-
-            // Comentarios
             $expediente->comentarios = $request->comentarios;
 
-            // Archivo comprobante de pago
             if ($request->hasFile('archivo')) {
+                $folder = 'uploads/expedientes/comprobante';
+                $rutaDestino = public_path($folder);
 
-                // Eliminar archivo anterior si existe
-                if ($expediente->archivo && Storage::disk('public')->exists($expediente->archivo)) {
-                    Storage::disk('public')->delete($expediente->archivo);
+                if (!file_exists($rutaDestino)) {
+                    mkdir($rutaDestino, 0755, true);
                 }
 
-                $ruta = $request->file('archivo')
-                    ->store('expedientes/pagos', 'public');
+                if ($expediente->archivo_comprobante_pago && file_exists(public_path($expediente->archivo_comprobante_pago))) {
+                    @unlink(public_path($expediente->archivo_comprobante_pago));
+                }
 
-                $expediente->archivo = $ruta;
+                $nombreArchivo = time() . '_' . $request->file('archivo')->getClientOriginalName();
+                $request->file('archivo')->move($rutaDestino, $nombreArchivo);
+                
+                $expediente->archivo_comprobante_pago = $folder . '/' . $nombreArchivo;
             }
 
             $expediente->save();
-
-            DB::commit();
 
             return response()->json([
                 'success' => true,
@@ -88,13 +95,9 @@ class ExpedientePagoController extends Controller
             ]);
 
         } catch (\Exception $e) {
-
-            DB::rollBack();
-
             return response()->json([
                 'success' => false,
-                'message' => 'Error al actualizar el expediente',
-                'error'   => $e->getMessage()
+                'message' => 'Error interno: ' . $e->getMessage()
             ], 500);
         }
     }
