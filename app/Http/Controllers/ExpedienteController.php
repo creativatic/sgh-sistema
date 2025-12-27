@@ -328,7 +328,7 @@ class ExpedienteController extends Controller
         'fecha_pago' => 'nullable|date',
         'total' => 'nullable|numeric|min:0',
         'detraccion' => 'nullable|numeric|min:0',
-        'deposito_a_proveer' => 'nullable|numeric|min:0',
+        'deposito_a_proveer' => 'nullable|numeric',
         'numero_factura_exped' => 'nullable|string|max:255',
         'comentarios' => 'nullable|string',
         'archivo.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:20480', // Archivos opcionales, máximo 10MB // ✅ LÍNEA AGREGADA/CORREGIDA para permitir múltiples archivos
