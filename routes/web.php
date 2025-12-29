@@ -28,9 +28,14 @@ use App\Http\Controllers\VolqueteAdelantoController;
 Route::middleware(['auth'])->group(function () {
 
     // Dashboard
+    // Route::get('/dashboard', [DashboardController::class, 'index'])
+    //     ->middleware('permission:ver dashboard')
+    //     ->name('dashboard');
+
     Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->middleware('permission:ver dashboard')
-        ->name('dashboard');
+    ->middleware('auth')
+    ->name('dashboard');
+
 
     // Perfil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
