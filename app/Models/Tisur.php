@@ -53,7 +53,7 @@ class Tisur extends Model
      */
     public function expedientes()
     {
-        return $this->hasMany(Expediente::class);
+        return $this->hasMany(Expediente::class, 'tisur_id');
     }
 
     public function proveedor()

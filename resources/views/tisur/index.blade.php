@@ -38,6 +38,7 @@
                     <th>Pago ($)</th>
                     <th>Estado</th>
                     <th>Fecha de pago</th>
+                    <th>Notas</th>
                     <th width="120">Acciones</th>
                 </tr>
             </thead>
@@ -67,6 +68,9 @@
                             ? \Carbon\Carbon::parse($t->fecha_pago)->format('d/m/Y') 
                             : '-' 
                         }}
+                    </td>
+                    <td>
+                        {{ $t->expedientes->first()->comentarios ?? '-' }}
                     </td>
                     <td class="text-center">
                         <button class="btn btn-sm btn-warning" 
