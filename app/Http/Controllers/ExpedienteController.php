@@ -110,6 +110,22 @@ class ExpedienteController extends Controller
             collect($validated)->except('archivo')->toArray()
         );
 
+        // 🔥 SINCRONIZAR TISUR DESPUÉS DE CREAR EXPEDIENTE
+        if ($expediente->tisur) {
+
+            if ($expediente->fecha_pago) {
+                $expediente->tisur->update([
+                    'fecha_pago' => $expediente->fecha_pago,
+                    'estado'     => 'PAGADO',
+                ]);
+            } else {
+                $expediente->tisur->update([
+                    'fecha_pago' => null,
+                    'estado'     => 'Pendiente',
+                ]);
+            }
+        }
+
         if ($request->hasFile('archivo')) {
             $this->saveArchivo($request->file('archivo'), $expediente);
         }
@@ -126,6 +142,23 @@ class ExpedienteController extends Controller
         unset($validated['archivo']);
 
         $expediente->update($validated);
+
+        // 🔥 SINCRONIZAR TISUR AL ACTUALIZAR EXPEDIENTE
+        if ($expediente->tisur) {
+
+            if ($expediente->fecha_pago) {
+                $expediente->tisur->update([
+                    'fecha_pago' => $expediente->fecha_pago,
+                    'estado'     => 'PAGADO',
+                ]);
+            } else {
+                // Si quitaron la fecha de pago
+                $expediente->tisur->update([
+                    'fecha_pago' => null,
+                    'estado'     => 'Pendiente',
+                ]);
+            }
+        }
 
         // 🔥 REEMPLAZAR archivos al editar
         if ($request->hasFile('archivo')) {
@@ -145,6 +178,14 @@ class ExpedienteController extends Controller
     {
         if ($expediente->archivo && Storage::disk('public')->exists($expediente->archivo)) {
             Storage::disk('public')->delete($expediente->archivo);
+        }
+
+        // 🔄 Revertir estado del TISUR si se elimina el expediente
+        if ($expediente->tisur) {
+            $expediente->tisur->update([
+                'fecha_pago' => null,
+                'estado'     => 'Pendiente',
+            ]);
         }
 
         $expediente->delete();

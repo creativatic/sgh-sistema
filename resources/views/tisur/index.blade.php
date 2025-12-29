@@ -37,6 +37,7 @@
                     <th>Retencion ($)</th>
                     <th>Pago ($)</th>
                     <th>Estado</th>
+                    <th>Fecha de pago</th>
                     <th width="120">Acciones</th>
                 </tr>
             </thead>
@@ -60,6 +61,12 @@
                         @else
                             <span class="badge bg-success">Pagado</span>
                         @endif
+                    </td>
+                    <td>
+                        {{ $t->fecha_pago 
+                            ? \Carbon\Carbon::parse($t->fecha_pago)->format('d/m/Y') 
+                            : '-' 
+                        }}
                     </td>
                     <td class="text-center">
                         <button class="btn btn-sm btn-warning" 

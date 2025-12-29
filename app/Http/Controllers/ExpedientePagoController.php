@@ -69,10 +69,12 @@ class ExpedientePagoController extends Controller
         ]);
 
         try {
-            $expediente = Expediente::findOrFail($id);
-            $expediente->fecha_pago = $request->fecha_pago;
+            $expediente = Expediente::with('tisur')->findOrFail($id);
+
+            $expediente->fecha_pago  = $request->fecha_pago;
             $expediente->comentarios = $request->comentarios;
 
+            // 📄 Comprobante de pago
             if ($request->hasFile('archivo')) {
                 $folder = 'uploads/expedientes/comprobante';
                 $rutaDestino = public_path($folder);
@@ -87,8 +89,25 @@ class ExpedientePagoController extends Controller
 
                 $nombreArchivo = time() . '_' . $request->file('archivo')->getClientOriginalName();
                 $request->file('archivo')->move($rutaDestino, $nombreArchivo);
-                
+
                 $expediente->archivo_comprobante_pago = $folder . '/' . $nombreArchivo;
+            }
+
+            /* =====================================================
+            🔥 SINCRONIZAR TISUR
+            ===================================================== */
+            if ($expediente->tisur) {
+                if ($request->fecha_pago) {
+                    $expediente->tisur->update([
+                        'fecha_pago' => $request->fecha_pago,
+                        'estado'     => 'PAGADO',
+                    ]);
+                } else {
+                    $expediente->tisur->update([
+                        'fecha_pago' => null,
+                        'estado'     => 'Pendiente',
+                    ]);
+                }
             }
 
             $expediente->save();
@@ -105,4 +124,5 @@ class ExpedientePagoController extends Controller
             ], 500);
         }
     }
+
 }
