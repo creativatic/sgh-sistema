@@ -20,6 +20,34 @@
     <i class="ri-add-circle-line"></i> Nueva Unidad
 </button>
 
+<form method="GET" action="{{ route('unidades.index') }}" class="mb-3">
+    <div class="row g-2 align-items-center">
+        <div class="col-md-5">
+            <input
+                type="text"
+                name="search"
+                class="form-control"
+                placeholder="Buscar por Placa Tracto, Placa Carreta, Tipo Plataforma o Proveedor..."
+                value="{{ request('search') }}"
+            >
+        </div>
+
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="ri-search-line"></i> Buscar
+            </button>
+        </div>
+
+        @if(request('search'))
+            <div class="col-md-2">
+                <a href="{{ route('unidades.index') }}" class="btn btn-outline-primary w-100">
+                    <i class="ri-refresh-line"></i> Limpiar
+                </a>
+            </div>
+        @endif
+    </div>
+</form>
+
 <div class="card mt-3">
     <div class="card-body table-responsive">
 

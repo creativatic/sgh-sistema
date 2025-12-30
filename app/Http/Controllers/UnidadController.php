@@ -8,10 +8,36 @@ use Illuminate\Http\Request;
 
 class UnidadController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $unidades = Unidad::with('proveedor')->paginate(10);
+        $search = $request->get('search');
+
+        $unidades = Unidad::with('proveedor')
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+
+                    // Placa Tracto
+                    $q->where('placa_tracto', 'like', "%{$search}%")
+
+                    // Placa Carreta
+                    ->orWhere('placa_carreta', 'like', "%{$search}%")
+
+                    // Tipo Plataforma
+                    ->orWhere('tipo_plataforma', 'like', "%{$search}%")
+
+                    // Proveedor
+                    ->orWhereHas('proveedor', function ($p) use ($search) {
+                        $p->where('razon_social', 'like', "%{$search}%");
+                    });
+
+                });
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+
         $proveedores = Proveedor::orderBy('razon_social')->get();
+
         return view('unidades.index', compact('unidades', 'proveedores'));
     }
 

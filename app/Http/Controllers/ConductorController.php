@@ -9,12 +9,37 @@ use Illuminate\Http\Request;
 
 class ConductorController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Trae conductores con sus unidades asignadas
-        $conductores = Conductor::with('unidades')->paginate(10);
+        $search = $request->get('search');
 
-        // Todas las unidades para asignaciones
+        $conductores = Conductor::with('unidades')
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+
+                    // DNI
+                    $q->where('dni', 'like', "%{$search}%")
+
+                    // Licencia
+                    ->orWhere('licencia', 'like', "%{$search}%")
+
+                    // Nombres
+                    ->orWhere('nombres', 'like', "%{$search}%")
+
+                    // Apellidos
+                    ->orWhere('apellidos', 'like', "%{$search}%")
+
+                    // Unidad (Placa Tracto)
+                    ->orWhereHas('unidades', function ($u) use ($search) {
+                        $u->where('placa_tracto', 'like', "%{$search}%");
+                    });
+
+                });
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(10)
+            ->withQueryString();
+
         $unidades = Unidad::orderBy('placa_tracto')->get();
 
         return view('conductores.index', compact('conductores', 'unidades'));

@@ -9,25 +9,58 @@ use Illuminate\Support\Facades\DB;
 
 class ExpedientePagoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->get('search');
+
         $programaciones = Programacion::query()
             ->leftJoin('expedientes', 'expedientes.programacion_id', '=', 'programacions.id')
+            ->leftJoin('tisurs', 'tisurs.id', '=', 'expedientes.tisur_id')
+            ->leftJoin('proveedores', 'proveedores.id', '=', 'programacions.proveedor_id')
+
             ->with([
                 'seguimiento',
                 'detalleProgramacion',
                 'expedientes.tisur',
                 'proveedor.unidades.conductores'
             ])
-            ->where('conformidad_adelanto', 'Ok')
-            ->orderByRaw('expedientes.id IS NULL ASC') // ✅ PRIORIDAD
+
+            ->where('programacions.conformidad_adelanto', 'Ok')
+
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+
+                    // Guía de Remisión
+                    $q->where('programacions.guia_remision', 'like', "%{$search}%")
+
+                    // N° Ticket TISUR
+                    ->orWhere('tisurs.numero_ticket', 'like', "%{$search}%")
+
+                    // RUC
+                    ->orWhere('proveedores.ruc_transporte', 'like', "%{$search}%")
+
+                    // Razón Social
+                    ->orWhere('proveedores.razon_social', 'like', "%{$search}%")
+
+                    // Banco
+                    ->orWhere('proveedores.banco', 'like', "%{$search}%")
+
+                    // Placa Tracto (relación unidades)
+                    ->orWhereHas('proveedor.unidades', function ($u) use ($search) {
+                        $u->where('placa_tracto', 'like', "%{$search}%");
+                    });
+
+                });
+            })
+
+            ->orderByRaw('expedientes.id IS NULL ASC') // prioridad sin expediente
             ->orderBy('programacions.created_at', 'DESC')
-            ->select('programacions.*') // ⚠️ IMPORTANTE
-            ->paginate(10);
+            ->select('programacions.*') // ⚠️ CLAVE para evitar conflictos
+            ->paginate(10)
+            ->withQueryString(); // mantiene el search al paginar
 
         return view('expediente_pagos.index', compact('programaciones'));
     }
-
     /**
      * Se unificaron las cargas para que SHOW y EDIT tengan la misma data
      */

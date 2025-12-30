@@ -14,17 +14,39 @@ use Illuminate\Support\Facades\DB;
 
 class ProgramacionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->get('search');
+
         $programaciones = Programacion::with([
             'proveedor:id,razon_social',
             'conductor:id,nombres,apellidos,telefono',
             'unidad:id,placa_tracto',
             'detalleProgramacion:id,frente'
         ])
-        ->orderBy('fecha_programacion', 'desc')
-        ->paginate(10);
+        ->when($search, function ($query) use ($search) {
+            $query->where(function ($q) use ($search) {
 
+                // Guía de Remisión
+                $q->where('guia_remision', 'like', "%{$search}%")
+
+                // Proveedor - Razón Social
+                ->orWhereHas('proveedor', function ($qp) use ($search) {
+                    $qp->where('razon_social', 'like', "%{$search}%");
+                })
+
+                // Unidad - Placa Tracto
+                ->orWhereHas('unidad', function ($qu) use ($search) {
+                    $qu->where('placa_tracto', 'like', "%{$search}%");
+                });
+
+            });
+        })
+        ->orderBy('fecha_programacion', 'desc')
+        ->paginate(10)
+        ->withQueryString(); // 👈 mantiene el search en la paginación
+
+        // datos para modales (sin cambios)
         $proveedores = Proveedor::with('unidades.conductores')
             ->select('id', 'razon_social', 'ruc_transporte', 'cuenta_banco', 'cci_banco', 'banco')
             ->get();

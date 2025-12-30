@@ -11,9 +11,29 @@ class TisurController extends Controller
     /**
      * Mostrar listado
      */
-    public function index()
+    public function index(Request $request)
     {
-        $tisurs = Tisur::with('expedientes')->latest()->paginate(10);
+        $search = $request->get('search');
+
+        $tisurs = Tisur::with('expedientes')
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+
+                    // N° Ticket
+                    $q->where('numero_ticket', 'like', "%{$search}%")
+
+                    // Transportista
+                    ->orWhere('transportista', 'like', "%{$search}%")
+
+                    // Placa Tracto
+                    ->orWhere('placa_tracto', 'like', "%{$search}%");
+
+                });
+            })
+            ->latest()
+            ->paginate(10)
+            ->withQueryString(); // mantiene search en la paginación
+
         return view('tisur.index', compact('tisurs'));
     }
 

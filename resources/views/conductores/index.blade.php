@@ -20,6 +20,34 @@
     <i class="ri-add-circle-line"></i> Nuevo Registro
 </button>
 
+<form method="GET" action="{{ route('conductores.index') }}" class="mb-3">
+    <div class="row g-2 align-items-center">
+        <div class="col-md-5">
+            <input
+                type="text"
+                name="search"
+                class="form-control"
+                placeholder="Buscar por DNI, Licencia, Nombres, Apellidos o Unidad..."
+                value="{{ request('search') }}"
+            >
+        </div>
+
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="ri-search-line"></i> Buscar
+            </button>
+        </div>
+
+        @if(request('search'))
+            <div class="col-md-2">
+                <a href="{{ route('conductores.index') }}" class="btn btn-outline-primary w-100">
+                    <i class="ri-refresh-line"></i> Limpiar
+                </a>
+            </div>
+        @endif
+    </div>
+</form>
+
 <div class="card mt-3">
     <div class="card-body table-responsive">
         <table class="table table-striped align-middle text-center">
