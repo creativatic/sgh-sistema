@@ -147,7 +147,7 @@
                         </div>
 
                         <div class="col-md-3">
-                            <label>Depósito a Proveer</label>
+                            <label>Total - detraccion y retencion</label>
                             <input type="number" step="0.01" name="deposito_a_proveer" class="form-control" value="{{ $volquete->deposito_a_proveer }}" readonly>
                         </div>
 

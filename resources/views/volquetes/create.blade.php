@@ -12,6 +12,16 @@
 
                 <div class="modal-body">
 
+                    @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
+
                     <div class="row g-3">
 
                         <!-- FECHA -->
@@ -261,8 +271,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const detr = total * 0.04;
         const rete = total * 0.10;
         const depo = total * 0.86;
-        const depoTotal = rete + depo;
-
+        /* const depoTotal = rete + depo;  */
+        const depoTotal = depo + rete;
+        
         totalS.value = total.toFixed(2);
         detraccion.value = detr.toFixed(2);
         retencion.value = rete.toFixed(2);

@@ -31,7 +31,7 @@
                     <th>Frente</th>
                     <th>Lampadas</th>
                     <th>Peso Total</th>
-                    <th>Total a Depositar S/</th>
+                    <th>Deposito a Proveer S/</th>
                     <th>Conformidad</th>
                     <th>Fecha de Pago</th>
                     <th>Notas</th>
@@ -70,7 +70,7 @@
                     <td>{{ number_format($v->total_peso_dia ?? 0, 2) }}</td>
 
                     {{-- total --}}
-                    <td>{{ number_format($v->deposito_a_proveer ?? 0, 2) }}</td> 
+                    <td>{{ number_format($v->deposito_total ?? 0, 2) }}</td> 
                     
                     {{-- conformidad --}}
                     <td>

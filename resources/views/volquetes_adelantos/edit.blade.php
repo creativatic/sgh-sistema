@@ -157,14 +157,14 @@
                                    readonly>
                         </div>
                         <div class="col-md-3">
-                            <label>Depósito a Proveer</label>
+                            <label>Total - detraccion y retencion</label>
                             <input class="form-control"
                                    value="{{ $volquete->deposito_a_proveer }}"
                                    readonly>
                         </div>
 
                         <div class="col-md-3">
-                            <label>Depósito Total</label>
+                            <label>Depósito Total a Proveer</label>
                             <input class="form-control"
                                    value="{{ $volquete->deposito_total }}"
                                    readonly>

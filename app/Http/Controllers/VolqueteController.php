@@ -22,52 +22,78 @@ class VolqueteController extends Controller
 
     public function store(Request $request)
     {
+        // 1. Validación: Validamos la unidad para que el formulario no pase vacío
         $request->validate([
+            'fecha' => 'required|date',
             'proveedor_id' => 'required|exists:proveedores,id',
-            'factura' => 'nullable|file|mimes:pdf|max:2048',
-            'comprobante_pago' => 'nullable|file|mimes:pdf|max:2048',
+            'detalle_programacion_id' => 'nullable|exists:detalle_programacions,id',
+            'factura' => 'nullable|file|mimes:pdf|max:30048',
+            'comprobante_pago' => 'nullable|file|mimes:pdf|max:30048',
         ]);
 
-        $data = $request->all();
+        // 2. Capturamos los datos
+        $data = $request->only([
+            'fecha',
+            'proveedor_id',
+            'detalle_programacion_id',
 
-        // ==========================
-        // GUARDAR FACTURA
-        // ==========================
-        if ($request->hasFile('factura')) {
+            'hora_vuelta_1',
+            'hora_vuelta_2',
+            'lampadas_vuelta_1',
+            'lampadas_vuelta_2',
+            'peso_vuelta_1',
+            'peso_vuelta_2',
 
-            $file = $request->file('factura');
-            $name = time().'_'.$file->getClientOriginalName();
+            'total_lampadas_dia',
+            'total_peso_dia',
 
-            $file->move(
-                public_path('uploads/volquetes/facturas'),
-                $name
-            );
+            'pasadas',
+            'total',
+            'detraccion',
+            'retencion',
+            'deposito_a_proveer',
+            'deposito_total',
 
-            $data['factura'] = 'uploads/volquetes/facturas/'.$name;
+            'conformidad',
+            'fecha_pago',
+            'observaciones',
+        ]);
+
+
+
+
+        try {
+            // Manejo de archivos (Factura)
+            if ($request->hasFile('factura')) {
+                $file = $request->file('factura');
+                $name = time().'_'.$file->getClientOriginalName();
+                $file->move(public_path('uploads/volquetes/facturas'), $name);
+                $data['factura'] = 'uploads/volquetes/facturas/'.$name;
+            }
+
+            // Manejo de archivos (Comprobante)
+            if ($request->hasFile('comprobante_pago')) {
+                $file = $request->file('comprobante_pago');
+                $name = time().'_'.$file->getClientOriginalName();
+                $file->move(public_path('uploads/volquetes/comprobantes'), $name);
+                $data['comprobante_pago'] = 'uploads/volquetes/comprobantes/'.$name;
+            }
+
+            // Normalizar valores numéricos que podrían venir vacíos del JS
+            $campos = ['total_lampadas_dia', 'total_peso_dia', 'total', 'detraccion', 'retencion', 'deposito_a_proveer', 'deposito_total'];
+            foreach ($campos as $campo) {
+                $data[$campo] = $data[$campo] ?? 0;
+            }
+            
+            $data['observaciones'] = $data['observaciones'] ?? null;
+            Volquete::create($data);
+
+            return back()->with('success', 'Volquete registrado correctamente');
+
+        } catch (\Exception $e) {
+            return back()->withInput()->withErrors(['error' => 'Error técnico: ' . $e->getMessage()]);
         }
-
-
-        // ==========================
-        // GUARDAR COMPROBANTE
-        // ==========================
-        if ($request->hasFile('comprobante_pago')) {
-
-            $file = $request->file('comprobante_pago');
-            $name = time().'_'.$file->getClientOriginalName();
-
-            $file->move(
-                public_path('uploads/volquetes/comprobantes'),
-                $name
-            );
-
-            $data['comprobante_pago'] = 'uploads/volquetes/comprobantes/'.$name;
-        }
-
-        Volquete::create($data);
-
-        return back()->with('success', 'Volquete registrado correctamente');
     }
-
 
     public function update(Request $request, $id)
     {

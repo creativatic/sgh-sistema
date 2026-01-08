@@ -77,7 +77,7 @@
                         <td>
                             {{ \Carbon\Carbon::parse($programacion->fecha_hora_salida)->format('Y-m-d') }}
                         </td>
-                        <td>{{ $programacion->proveedor?->unidades?->first()?->placa_tracto ?? '-' }}</td>
+                        <td>{{ $programacion->unidad?->placa_tracto ?? '-' }}</td>
                         <td>{{ $programacion->tipo_mineral ?? '-' }}</td>
                         <td>{{ $programacion->detalleProgramacion?->frente ?? '-' }}</td>
                         <td>{{ $programacion->proveedor?->ruc_transporte ?? '-' }}</td>
@@ -150,7 +150,7 @@ function editarExpedientePago(id) {
                 data.tisur?.numero_ticket ?? '-';
 
             document.getElementById('view_placa').value =
-                data.programacion?.proveedor?.unidades?.[0]?.placa_tracto ?? '-';
+                data.programacion?.unidad?.placa_tracto ?? '-';
 
             document.getElementById('view_ruc').value =
                 data.programacion?.proveedor?.ruc_transporte ?? '-';
@@ -239,7 +239,8 @@ function verExpedientePago(id) {
 
             // ==== PROGRAMACIÓN ====
             document.getElementById('show_guia_remision').textContent = d.programacion?.guia_remision ?? '-';
-            document.getElementById('show_placa').textContent = d.programacion?.proveedor?.unidades?.[0]?.placa_tracto ?? '-';
+            // document.getElementById('show_placa').textContent = d.programacion?.proveedor?.unidades?.[0]?.placa_tracto ?? '-';
+            document.getElementById('show_placa').textContent = d.programacion?.unidad?.placa_tracto ?? '-';
             document.getElementById('show_frente').textContent = d.programacion?.detalle_programacion?.frente ?? '-';
             document.getElementById('show_tipo_mineral').textContent = d.programacion?.tipo_mineral ?? '-';
 

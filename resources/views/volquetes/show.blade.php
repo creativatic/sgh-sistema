@@ -102,13 +102,14 @@
                 <div class="row">
                     <div class="col-md-4">
                         <p><strong>Detracción:</strong> {{ number_format($volquete->detraccion, 2) }}</p>
-                        <p><strong>Monto aplicando Rentención:</strong> {{ number_format($volquete->deposito_a_proveer, 2) }}</p>
+                        <p><strong>Total - detraccion y retencion:</strong> {{ number_format($volquete->deposito_a_proveer, 2) }}</p>
 
                     </div>
 
                     <div class="col-md-4">
-                        <p><strong>Retención:</strong> {{ number_format($volquete->retencion, 2) }}</p>
-                        <p><strong>Deposito Total S/:</strong> {{ number_format($volquete->total, 2) }}</p>
+                        <p><strong>Total S/:</strong> {{ number_format($volquete->total, 2) }}</p>
+                        <p><strong>Detracción:</strong> {{ number_format($volquete->detraccion, 2) }}</p>
+                        <p><strong>Depósito a Proveer:</strong> {{ number_format($volquete->deposito_total, 2) }}</p>
                     </div>
 
 
