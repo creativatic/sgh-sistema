@@ -10,10 +10,10 @@
             </div>
 
             <div class="modal-body">
-                <h6 class="text-primary mb-3">📋 Datos de la Programación</h6>
+                <h6 class="text-primary mb-3">馃搵 Datos de la Programaci贸n</h6>
                 <div class="row g-3">
                     <div class="col-md-3">
-                        <label class="form-label fw-bold">N° Guía Remisión:</label>
+                        <label class="form-label fw-bold">N掳 Gu铆a Remisi贸n:</label>
                         <p id="show_guia_remision" class="form-control-plaintext"></p>
                     </div>
                     <div class="col-md-3">
@@ -30,7 +30,7 @@
                     </div>
 
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">Razón Social:</label>
+                        <label class="form-label fw-bold">Raz贸n Social:</label>
                         <p id="show_razon_social" class="form-control-plaintext"></p>
                     </div>
                     <div class="col-md-4">
@@ -42,7 +42,7 @@
                         <p id="show_conductor" class="form-control-plaintext"></p>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">Teléfono:</label>
+                        <label class="form-label fw-bold">Tel茅fono:</label>
                         <p id="show_telefono" class="form-control-plaintext"></p>
                     </div>
                     <div class="col-md-4">
@@ -57,10 +57,10 @@
 
                 <hr class="my-4">
 
-                <h6 class="text-primary mb-3">📑 Datos del Expediente</h6>
+                <h6 class="text-primary mb-3">馃搼 Datos del Expediente</h6>
                 <div class="row g-3">
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">N° Ticket (Tisur):</label>
+                        <label class="form-label fw-bold">N掳 Ticket (Tisur):</label>
                         <p id="show_tisur" class="form-control-plaintext"></p>
                     </div>
                     <div class="col-md-4">
@@ -76,15 +76,15 @@
                         <p id="show_total" class="form-control-plaintext"></p>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">Detracción:</label>
+                        <label class="form-label fw-bold">Detracci贸n:</label>
                         <p id="show_detraccion" class="form-control-plaintext"></p>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-bold">Depósito a Proveer:</label>
+                        <label class="form-label fw-bold">Dep贸sito a Proveer:</label>
                         <p id="show_deposito" class="form-control-plaintext"></p>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">N° Factura:</label>
+                        <label class="form-label fw-bold">N掳 Factura:</label>
                         <p id="show_factura" class="form-control-plaintext"></p>
                     </div>
                     <div class="col-md-6">
@@ -92,7 +92,7 @@
                         <p id="show_comentarios" class="form-control-plaintext"></p>
                     </div>
 
-                    {{-- Aquí se insertarán los PDF --}}
+                    {{-- Aqu铆 se insertar谩n los PDF --}}
                     <div class="col-md-12">
                         <label class="form-label fw-bold">Archivos adjuntos PDF:</label>
                         <div id="show_archivos"></div>

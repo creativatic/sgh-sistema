@@ -103,7 +103,6 @@ class ExpedienteController extends Controller
      */
     public function store(Request $request)
     {
-        
         $validated = $this->validateExpediente($request);
 
         $expediente = Expediente::create(
@@ -206,7 +205,8 @@ class ExpedienteController extends Controller
 
         $programacion = $expediente->programacion;
         $proveedor    = $programacion?->proveedor;
-        $unidad       = $proveedor?->unidades->first();
+        
+        $unidad       = $programacion->unidad ?? null; 
         $conductor    = $unidad?->conductores->first();
         $tisur        = $expediente->tisur;
 
@@ -254,9 +254,11 @@ class ExpedienteController extends Controller
             'proveedor.unidades.conductores'
         ])->findOrFail($id);
 
-        $proveedor = $programacion->proveedor;
-        $unidad     = $proveedor?->unidades->first() ?? null;
-        $conductor  = $unidad?->conductores->first() ?? null;
+        $proveedor = $programacion->proveedor; 
+        /** $conductor = $unidad?->conductores->first() ?? null; */ 
+        $unidad = $programacion->unidad ?? null; 
+        $conductores = $unidad?->conductores; 
+        $conductor = $conductores?->first();
 
         return response()->json([
             'id'                    => $programacion->id,
@@ -374,6 +376,7 @@ class ExpedienteController extends Controller
         'deposito_a_proveer' => 'nullable|numeric',
         'numero_factura_exped' => 'nullable|string|max:255',
         'comentarios' => 'nullable|string',
+        'archivo' => 'nullable|array',
         'archivo.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,doc,docx|max:20480', // Archivos opcionales, máximo 10MB // ✅ LÍNEA AGREGADA/CORREGIDA para permitir múltiples archivos
         ]);
     }
