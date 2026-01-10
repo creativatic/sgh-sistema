@@ -60,6 +60,7 @@
                         <th>Frente</th>
                         <th>Razón Social Transporte</th>
                         <th>Banco</th>
+                        <th>Estado de Impresión Factura</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -78,6 +79,46 @@
                             <td>{{ $programacion->detalleProgramacion->frente ?? '-' }}</td>
                             <td>{{ $programacion->proveedor->razon_social ?? '-' }}</td>
                             <td>{{ $programacion->proveedor->banco ?? '-' }}</td>
+                            
+                            <td class="text-center">
+                            @php
+                                $estadoImpresion = $expediente?->estado_impresion ?? 'Pendiente';
+                            @endphp
+
+                            @role('Administrador')
+                                @if($expediente)
+                                    <form action="{{ route('expedientes.estado_impresion', $expediente->id) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+
+                                        <div class="form-check form-switch d-flex justify-content-center">
+                                            <input
+                                                class="form-check-input"
+                                                type="checkbox"
+                                                role="switch"
+                                                name="estado_impresion"
+                                                value="Ok"
+                                                {{ $estadoImpresion === 'Ok' ? 'checked' : '' }}
+                                                onchange="this.form.submit()"
+                                            >
+                                        </div>
+                                    </form>
+
+                                    <small class="fw-bold d-block mt-1
+                                        {{ $estadoImpresion === 'Ok' ? 'text-success' : 'text-danger' }}">
+                                        {{ $estadoImpresion === 'Ok' ? 'OK' : 'Pendiente' }}
+                                    </small>
+                                @else
+                                    <span class="badge bg-secondary">Sin expediente</span>
+                                @endif
+                            @else
+                                <span class="badge 
+                                    {{ $estadoImpresion === 'Ok' ? 'bg-success' : 'bg-danger' }}">
+                                    {{ $estadoImpresion === 'Ok' ? 'OK' : 'Pendiente' }}
+                                </span>
+                            @endrole
+                        </td>
+
                             <td>
                                 {{-- ✅ Ver Expediente --}}
                                     @if($expediente)
@@ -178,8 +219,13 @@ function verExpediente(id) {
             document.getElementById('show_deposito').textContent    = data.deposito_a_proveer ?? '-';
             document.getElementById('show_factura').textContent     = data.numero_factura_exped ?? '-';
             document.getElementById('show_comentarios').textContent = data.comentarios ?? '-';
+            // 🔥 Estado impresión factura (visual pro)
+            const estadoEl = document.getElementById('show_estado_impresion');
+            estadoEl.textContent = data.estado_impresion === 'Ok' ? 'OK' : 'Pendiente';
+            estadoEl.className = data.estado_impresion === 'Ok'
+                ? 'fw-bold text-success'
+                : 'fw-bold text-danger';
 
-            // --- ARCHIVOS ---
             // --- ARCHIVOS ---
             const archivosDiv = document.getElementById('show_archivos');
             archivosDiv.innerHTML = '';

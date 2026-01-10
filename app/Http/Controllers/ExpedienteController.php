@@ -238,6 +238,9 @@ class ExpedienteController extends Controller
             'numero_factura_exped' => $expediente->numero_factura_exped,
             'comentarios'       => $expediente->comentarios,
 
+            // 🔵 Estado impresión factura (🔥 NUEVO)
+            'estado_impresion'  => $expediente->estado_impresion ?? 'Pendiente',
+
             // 🔵 Archivos
             'archivos'          => $expediente->archivo ?? [],
         ]);
@@ -503,6 +506,17 @@ class ExpedienteController extends Controller
             'fecha_hora_ingreso' => $tisur->fecha_hora_ingreso,
             'peso_neto' => $tisur->peso_neto,
         ]);
+    }
+
+    public function estadoImpresion(Request $request, Expediente $expediente)
+    {
+        $expediente->estado_impresion = $request->estado_impresion === 'Ok'
+            ? 'Ok'
+            : 'Pendiente';
+
+        $expediente->save();
+
+        return back();
     }
 
 

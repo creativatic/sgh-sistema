@@ -83,13 +83,17 @@
                         <label class="form-label fw-bold">Dep贸sito a Proveer:</label>
                         <p id="show_deposito" class="form-control-plaintext"></p>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="form-label fw-bold">N掳 Factura:</label>
                         <p id="show_factura" class="form-control-plaintext"></p>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label class="form-label fw-bold">Comentarios:</label>
                         <p id="show_comentarios" class="form-control-plaintext"></p>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Estado Impresion Factura:</label>
+                        <p id="show_estado_impresion" class="form-control-plaintext"></p>
                     </div>
 
                     {{-- Aqu铆 se insertar谩n los PDF --}}

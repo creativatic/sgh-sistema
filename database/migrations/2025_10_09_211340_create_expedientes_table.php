@@ -20,6 +20,8 @@ return new class extends Migration {
                 ->constrained('programacions')
                 ->nullOnDelete();
 
+            $table->enum('estado_impresion', ['Ok', 'Pendiente'])->nullable(); // ← Cambiado
+
             // Campos propios del expediente
             // $table->string('numero_ticke_exped')->nullable();
             $table->string('numero_factura_exped')->nullable();

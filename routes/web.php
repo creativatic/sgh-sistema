@@ -94,6 +94,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/expediente', [ExpedienteController::class, 'index'])->name('expediente.index');
         Route::get('/expedientes/autocomplete-tisur', [ExpedienteController::class, 'autocompleteTisur']);
         Route::get('/expedientes/tisur/{id}', [ExpedienteController::class, 'obtenerTisur']);
+        Route::patch('expedientes/{expediente}/estado-impresion',[ExpedienteController::class, 'estadoImpresion'])->name('expedientes.estado_impresion');
 
         // Expediente
         Route::resource('expediente', ExpedienteController::class);

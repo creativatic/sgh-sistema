@@ -33,6 +33,7 @@ class Expediente extends Model
         'peso_entrada',
         'segundo_pesaje',
         'peso_neto',
+        'estado_impresion',
         'costo_tn',
         'total',
         'detraccion',
