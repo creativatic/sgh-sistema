@@ -119,6 +119,7 @@ Route::middleware(['auth'])->group(function () {
         // UNIDADES
         Route::resource('unidades', UnidadController::class);
         Route::patch('/volquetes/{id}/conformidad',[VolqueteController::class, 'conformidad'])->name('volquetes.conformidad');
+        Route::patch('/volquetes/{id}/estado-impresion', [VolqueteController::class, 'estadoImpresion'])->name('volquetes.estado_impresion');
 
         Route::resource('volquetes', VolqueteController::class);
         

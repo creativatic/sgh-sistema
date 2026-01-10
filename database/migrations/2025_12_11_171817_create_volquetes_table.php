@@ -41,6 +41,7 @@ return new class extends Migration
 
             // ----------- Totales del día -----------
             $table->string('conformidad')->nullable();
+            $table->enum('estado_impresion_volquetes', ['Ok', 'Pendiente'])->nullable(); // ← Cambiado
             $table->integer('total_lampadas_dia')->nullable();
             $table->decimal('total_peso_dia', 10, 2)->nullable();
 

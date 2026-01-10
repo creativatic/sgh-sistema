@@ -34,10 +34,12 @@
                     <th>Lampadas</th>
                     <th>Peso Total</th>
                     <th>Depósito a Proveer S/</th>
-                    <th>Conformidad</th>
+                    <th>Conformidad Pago</th>
                     
+                                        
                     <th>Fecha de Pago</th>
                     <th>Notas</th>
+                    <th>Impresión Factura</th>
                     <th width="120">Acciones</th>
                 </tr>
             </thead>
@@ -100,10 +102,44 @@
                             </span>
                         @endrole
                     </td>
-
-
                     <td>{{ $v->fecha_pago }}</td>
                     <td>{{ $v->observaciones }}</td>
+                    
+                    {{-- estado impresión factura --}}
+                    <td class="text-center">
+                        @php
+                            $estadoImpresion = $v->estado_impresion_volquetes ?? 'Pendiente';
+                        @endphp
+
+                        @role('Administrador')
+                            <form action="{{ route('volquetes.estado_impresion', $v->id) }}" method="POST">
+                                @csrf
+                                @method('PATCH')
+
+                                <div class="form-check form-switch d-flex justify-content-center">
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        role="switch"
+                                        name="estado_impresion_volquetes"
+                                        value="Ok"
+                                        {{ $estadoImpresion === 'Ok' ? 'checked' : '' }}
+                                        onchange="this.form.submit()"
+                                    >
+                                </div>
+                            </form>
+
+                            <small class="fw-bold d-block mt-1
+                                {{ $estadoImpresion === 'Ok' ? 'text-success' : 'text-danger' }}">
+                                {{ $estadoImpresion === 'Ok' ? 'OK' : 'Pendiente' }}
+                            </small>
+                        @else
+                            <span class="badge
+                                {{ $estadoImpresion === 'Ok' ? 'bg-success' : 'bg-danger' }}">
+                                {{ $estadoImpresion === 'Ok' ? 'OK' : 'Pendiente' }}
+                            </span>
+                        @endrole
+                    </td>
 
                     <td>
 

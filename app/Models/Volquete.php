@@ -29,6 +29,7 @@ class Volquete extends Model
         'deposito_total',
 
         'conformidad',
+        'estado_impresion_volquetes',
         'fecha_pago',
         'factura',
         'comprobante_pago',

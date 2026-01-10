@@ -192,5 +192,22 @@ class VolqueteController extends Controller
         return back()->with('success', 'Conformidad actualizada');
     }
 
+    public function estadoImpresion(Request $request, $id)
+    {
+        // Seguridad: solo Administrador
+        if (!auth()->user()->hasRole('Administrador')) {
+            abort(403, 'No autorizado');
+        }
+
+        $volquete = Volquete::findOrFail($id);
+
+        $volquete->update([
+            'estado_impresion_volquetes' => $request->has('estado_impresion_volquetes')
+                ? 'Ok'
+                : 'Pendiente'
+        ]);
+
+        return back()->with('success', 'Estado de impresión actualizado');
+    }
 
 }

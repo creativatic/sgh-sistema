@@ -20,7 +20,11 @@
                         <p><strong>Fecha:</strong> {{ $volquete->fecha }}</p>
                         <p><strong>Proveedor:</strong> {{ $volquete->proveedor->razon_social ?? '-' }}</p>
                         <p><strong>Frente:</strong> {{ $volquete->detalleProgramacion->frente ?? '-' }}</p>
-                        <p><strong>Conformidad:</strong> {{ $volquete->conformidad ?? '-' }}</p>
+                        <p><strong>Conformidad:</strong> 
+                            <span class="fw-bold
+                                {{ $volquete->conformidad === 'Ok' ? 'text-success' : 'text-danger' }}">
+                                {{ $volquete->conformidad === 'Ok' ? 'OK' : 'Pendiente' }}
+                            </span>                                                              
                     </div>
 
                     <div class="col-md-6">
@@ -63,6 +67,13 @@
                             @else
                                 <span class="text-muted">No adjunto</span>
                             @endif
+                        </p>
+                        <p>
+                            <strong>Estado Impresión Factura:</strong>
+                            <span class="fw-bold
+                                {{ $volquete->estado_impresion_volquetes === 'Ok' ? 'text-success' : 'text-danger' }}">
+                                {{ $volquete->estado_impresion_volquetes === 'Ok' ? 'OK' : 'Pendiente' }}
+                            </span>
                         </p>
                     </div>
                 </div>
