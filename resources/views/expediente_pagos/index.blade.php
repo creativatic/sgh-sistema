@@ -202,11 +202,9 @@ document.getElementById('editExpedientePagoForm').addEventListener('submit', fun
 
     fetch(`/expediente-pagos/${id}`, {
         method: 'POST', // <--- CAMBIO CLAVE: Aquí debe ser POST
-        headers: {http://127.0.0.1:8000/detalleprogramacion
+        headers: {
             'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
             'Accept': 'application/json'
-            // NOTA: No agregues 'Content-Type', el navegador lo configurará 
-            // automáticamente como multipart/form-data con el boundary correcto.
         },
         body: formData
     })
