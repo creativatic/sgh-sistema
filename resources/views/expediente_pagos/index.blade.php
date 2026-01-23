@@ -57,6 +57,7 @@
                         <th>CCI</th>
                         <th>Banco</th>
                         <th>Deposito a proveer</th>
+                        <th>N° Factura de Exp.</th>
                         <th>Fecha de pago</th>
                         <th>Notas</th>
                         <th>Acciones</th>
@@ -86,6 +87,7 @@
                         <td>{{ $programacion->proveedor?->cci_banco ?? '-' }}</td>
                         <td>{{ $programacion->proveedor?->banco ?? '-' }}</td>
                         <td>{{ $expediente?->deposito_a_proveer ?? '-' }}</td>
+                        <td>{{ $expediente?->numero_factura_exped ?? '-' }}</td>
                         <td>{{ $expediente?->fecha_pago ?? '-' }}</td>
                         <td>{{ $expediente?->comentarios ?? '-' }}</td>
 
@@ -200,7 +202,7 @@ document.getElementById('editExpedientePagoForm').addEventListener('submit', fun
 
     fetch(`/expediente-pagos/${id}`, {
         method: 'POST', // <--- CAMBIO CLAVE: Aquí debe ser POST
-        headers: {
+        headers: {http://127.0.0.1:8000/detalleprogramacion
             'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
             'Accept': 'application/json'
             // NOTA: No agregues 'Content-Type', el navegador lo configurará 
