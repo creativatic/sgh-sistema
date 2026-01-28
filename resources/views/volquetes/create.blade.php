@@ -174,6 +174,16 @@
                                 accept="application/pdf">
                         </div>
 
+                        <div class="col-12">
+                            <label class="form-label">Comentarios</label>
+                            <textarea
+                                name="observaciones"
+                                class="form-control"
+                                rows="2"
+                                placeholder="Ingrese comentarios u observaciones adicionales..."></textarea>
+                        </div>
+
+
                     </div>
 
                 </div>
