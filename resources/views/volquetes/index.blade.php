@@ -27,6 +27,7 @@
                 <tr>
                     <th>Fecha Programada</th>
                     <th>Proveedor</th>
+                    <th>Placa Tracto</th>
                     <th>Cuenta Bancaria</th>
                     <th>Cuenta CCI</th>
                     <th>Banco</th>
@@ -50,6 +51,10 @@
                     
                     {{-- proveedor --}}
                     <td>{{ $v->proveedor->razon_social ?? '-' }}</td>
+
+                    <td>
+                        {{ $v->proveedor?->unidades?->first()?->placa_tracto ?? '-' }}
+                    </td>
 
                     {{-- cuenta bancaria --}}
                     <td>{{ $v->proveedor->cuenta_banco ?? '-' }}</td>

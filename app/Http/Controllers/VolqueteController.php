@@ -12,7 +12,11 @@ class VolqueteController extends Controller
 {
     public function index()
     {
-        $volquetes = Volquete::with(['proveedor'])->paginate(10);
+        $volquetes = Volquete::with([
+            'proveedor.unidades',
+            'detalleProgramacion'            
+        ])->paginate(10);
+
         $proveedores = Proveedor::orderBy('razon_social')->get();
         $frentes = DetalleProgramacion::orderBy('descripcion')->get();
         $unidades = Unidad::orderBy('placa_tracto')->get(); // 🔥 Esto es necesario

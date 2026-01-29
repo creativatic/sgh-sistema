@@ -36,6 +36,10 @@ class Volquete extends Model
         'observaciones',
     ];
 
+    public function unidad()
+    {
+        return $this->belongsTo(Unidad::class, 'unidad_id');
+    }
 
     public function proveedor()
     {
