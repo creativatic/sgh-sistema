@@ -6,7 +6,7 @@
 
 
 <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-    <h4 class="mb-sm-0">Gestión de Volquetes</h4>
+    <h4 class="mb-sm-0">Gestion de Volquetes</h4>
     <div class="page-title-right">
         <ol class="breadcrumb m-0">
             <li class="breadcrumb-item"><a href="javascript:void(0);">Volquetes</a></li>
@@ -14,6 +14,36 @@
         </ol>
     </div>
 </div>
+
+<form method="GET" action="{{ route('volquetes.index') }}" class="mb-3">
+    <div class="row g-2 align-items-center">
+
+        <div class="col-md-4">
+            <input
+                type="text"
+                name="search"
+                class="form-control"
+                placeholder="Buscar por Proveedor o Placa Tracto..."
+                value="{{ request('search') }}"
+            >
+        </div>
+
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="ri-search-line"></i> Buscar
+            </button>
+        </div>
+
+        @if(request('search'))
+            <div class="col-md-2">
+                <a href="{{ route('volquetes.index') }}" class="btn btn-outline-primary w-100">
+                    <i class="ri-refresh-line"></i> Limpiar
+                </a>
+            </div>
+        @endif
+
+    </div>
+</form>
 
 <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalCreateVolquete">
     <i class="ri-add-circle-line"></i> Nuevo Volquete
@@ -34,13 +64,13 @@
                     <th>Frente</th>
                     <th>Lampadas</th>
                     <th>Peso Total</th>
-                    <th>Depósito a Proveer S/</th>
+                    <th>Deposito a Proveer S/</th>
                     <th>Conformidad Pago</th>
                     
                                         
                     <th>Fecha de Pago</th>
                     <th>Notas</th>
-                    <th>Impresión Factura</th>
+                    <th>Impresion Factura</th>
                     <th width="120">Acciones</th>
                 </tr>
             </thead>

@@ -10,19 +10,46 @@ use Illuminate\Http\Request;
 
 class VolqueteController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->input('search');
+
         $volquetes = Volquete::with([
             'proveedor.unidades',
-            'detalleProgramacion'            
-        ])->paginate(10);
+            'detalleProgramacion'
+        ])
+        ->when($search, function ($query) use ($search) {
+            $query->where(function ($q) use ($search) {
 
+                // 🔍 Buscar por Razón Social del Proveedor
+                $q->whereHas('proveedor', function ($sub) use ($search) {
+                    $sub->where('razon_social', 'LIKE', "%{$search}%");
+                })
+
+                // 🔍 Buscar por Placa Tracto
+                ->orWhereHas('proveedor.unidades', function ($sub) use ($search) {
+                    $sub->where('placa_tracto', 'LIKE', "%{$search}%");
+                });
+
+            });
+        })
+        ->orderBy('fecha', 'desc')
+        ->paginate(10)
+        ->withQueryString(); // 🔥 mantiene search al paginar
+
+        // 🔵 Estos datos ya los usas en modales → NO se tocan
         $proveedores = Proveedor::orderBy('razon_social')->get();
         $frentes = DetalleProgramacion::orderBy('descripcion')->get();
-        $unidades = Unidad::orderBy('placa_tracto')->get(); // 🔥 Esto es necesario
+        $unidades = Unidad::orderBy('placa_tracto')->get();
 
-        return view('volquetes.index', compact('volquetes', 'proveedores', 'frentes', 'unidades'));
+        return view('volquetes.index', compact(
+            'volquetes',
+            'proveedores',
+            'frentes',
+            'unidades'
+        ));
     }
+
 
     public function store(Request $request)
     {
