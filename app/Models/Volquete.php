@@ -10,6 +10,7 @@ class Volquete extends Model
         'fecha',
         'proveedor_id',
         'detalle_programacion_id',
+        'unidad_id',
 
         'hora_vuelta_1',
         'hora_vuelta_2',

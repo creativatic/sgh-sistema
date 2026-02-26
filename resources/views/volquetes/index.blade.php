@@ -83,7 +83,7 @@
                     <td>{{ $v->proveedor->razon_social ?? '-' }}</td>
 
                     <td>
-                        {{ $v->proveedor?->unidades?->first()?->placa_tracto ?? '-' }}
+                        {{ $v->unidad->placa_tracto ?? '-' }}
                     </td>
 
                     {{-- cuenta bancaria --}}

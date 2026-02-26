@@ -29,6 +29,12 @@ return new class extends Migration
                   ->constrained('detalle_programacions')
                   ->nullOnDelete();
 
+            $table->foreignId('unidad_id')
+                  ->after('proveedor_id')
+                  ->nullable()
+                  ->constrained('unidades')
+                  ->nullOnDelete();
+            
             // ----------- Datos Vuelta 1 -----------
             $table->time('hora_vuelta_1')->nullable();
             $table->integer('lampadas_vuelta_1')->nullable();

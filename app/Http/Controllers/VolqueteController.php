@@ -15,7 +15,8 @@ class VolqueteController extends Controller
         $search = $request->input('search');
 
         $volquetes = Volquete::with([
-            'proveedor.unidades',
+            'proveedor',
+            'unidad',
             'detalleProgramacion'
         ])
         ->when($search, function ($query) use ($search) {
@@ -27,7 +28,7 @@ class VolqueteController extends Controller
                 })
 
                 // 🔍 Buscar por Placa Tracto
-                ->orWhereHas('proveedor.unidades', function ($sub) use ($search) {
+                ->orWhereHas('unidad', function ($sub) use ($search) {
                     $sub->where('placa_tracto', 'LIKE', "%{$search}%");
                 });
 
@@ -57,6 +58,7 @@ class VolqueteController extends Controller
         $request->validate([
             'fecha' => 'required|date',
             'proveedor_id' => 'required|exists:proveedores,id',
+            'unidad_id' => 'required|exists:unidades,id', 
             'detalle_programacion_id' => 'nullable|exists:detalle_programacions,id',
             'factura' => 'nullable|file|mimes:pdf|max:30048',
             'comprobante_pago' => 'nullable|file|mimes:pdf|max:30048',
@@ -66,6 +68,7 @@ class VolqueteController extends Controller
         $data = $request->only([
             'fecha',
             'proveedor_id',
+            'unidad_id',
             'detalle_programacion_id',
 
             'hora_vuelta_1',
@@ -133,6 +136,7 @@ class VolqueteController extends Controller
         $request->validate([
             'fecha' => 'required|date',
             'proveedor_id' => 'required|exists:proveedores,id',
+            'unidad_id' => 'required|exists:unidades,id',
             'detalle_programacion_id' => 'nullable|exists:detalle_programacions,id',
 
             'factura' => 'nullable|file|mimes:pdf|max:2048',
