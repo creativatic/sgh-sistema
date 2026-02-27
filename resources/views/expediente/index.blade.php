@@ -202,6 +202,13 @@
                     </button>
                 </div>
 
+                {{-- ✅ Botón ZIP al costado --}}
+                <div class="col-md-3">
+                    <a href="{{ route('expedientes.descargarFacturas') }}" class="btn btn-danger w-100">
+                        <i class="ri-file-zip-line"></i> Descargar Facturas (ZIP)
+                    </a>
+                </div>
+
             </div>
         </form>
 
@@ -277,7 +284,7 @@ function verExpediente(id) {
                     file = file.replace(/[\[\]\"]/g, "");
 
                     const nombre = file.split('/').pop();
-                    const url = `/expediente/archivo/${nombre}`;
+                    const url = `/expediente/archivo/${encodeURIComponent(file)}`; // <-- pasar file completo
 
                     archivosDiv.innerHTML += `
                         <a href="${url}" target="_blank"

@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Exports\ExpedienteExport;
 use Maatwebsite\Excel\Facades\Excel;
 
+use ZipArchive;
+use Illuminate\Support\Facades\File;
+
 use App\Models\Expediente;
 use App\Models\Programacion;
 use App\Models\Tisur;
@@ -394,10 +397,12 @@ class ExpedienteController extends Controller
     {
         $archivos = [];
 
+        // Si reemplazamos archivos antiguos
         if ($reemplazar && $expediente->archivo) {
             foreach ((array)$expediente->archivo as $old) {
-                if (Storage::disk('public')->exists($old)) {
-                    Storage::disk('public')->delete($old);
+                $oldPath = public_path('uploads/' . $old);
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
                 }
             }
         } elseif ($expediente->archivo) {
@@ -406,8 +411,25 @@ class ExpedienteController extends Controller
 
         foreach ((array)$files as $file) {
             if ($file) {
-                $path = $file->store('expedientes', 'public');
-                $archivos[] = $path;
+                // Carpeta base según tipo de archivo
+                if ($file->getClientOriginalExtension() === 'pdf') {
+                    $folder = 'expedientes/facturas';
+                } else {
+                    $folder = 'expedientes/comprobante';
+                }
+
+                // Crear carpeta si no existe
+                $uploadPath = public_path('uploads/' . $folder);
+                if (!file_exists($uploadPath)) {
+                    mkdir($uploadPath, 0755, true);
+                }
+
+                // Nombre único
+                $filename = uniqid() . '_' . $file->getClientOriginalName();
+                $file->move($uploadPath, $filename);
+
+                // Guardamos ruta relativa en DB
+                $archivos[] = $folder . '/' . $filename;
             }
         }
 
@@ -457,18 +479,16 @@ class ExpedienteController extends Controller
 
     public function verArchivo($archivo)
     {
+        $archivo = urldecode($archivo); // decodifica %20 y caracteres UTF-8
         $archivo = str_replace('..', '', $archivo); // seguridad básica
-        $path = 'expedientes/' . $archivo;
+        $path = public_path('uploads/' . $archivo); // ahora archivo incluye subcarpetas
 
-        if (!Storage::disk('public')->exists($path)) {
+        if (!file_exists($path)) {
             abort(404, 'Archivo no encontrado');
         }
 
-        return response()->file(
-            storage_path('app/public/' . $path)
-        );
+        return response()->file($path);
     }
-
     /* ===========================================================
        🔍 AUTOCOMPLETE TISUR
        =========================================================== */
@@ -532,6 +552,70 @@ class ExpedienteController extends Controller
             new ExpedienteExport($request->fecha_inicio, $request->fecha_fin),
             'reporte_expedientes.xlsx'
         );
+    }
+
+    public function descargarFacturas()
+    {
+        $expedientes = Expediente::with(['programacion.unidad', 'tisur'])->get(); // ✅ agregado tisur
+
+        $zipFileName = 'facturas_expedientes_' . time() . '.zip';
+        $zipPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $zipFileName;
+
+        $zip = new \ZipArchive;
+
+        if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== TRUE) {
+            return back()->with('error', 'No se pudo crear el ZIP.');
+        }
+
+        $archivosAgregados = 0;
+
+        foreach ($expedientes as $exp) {
+            if (!$exp->archivo) continue;
+
+            $rawArchivo = $exp->archivo;
+            if (is_string($rawArchivo)) {
+                $decoded = json_decode($rawArchivo, true);
+                $archivos = is_array($decoded) ? $decoded : [$rawArchivo];
+            } else {
+                $archivos = (array) $rawArchivo;
+            }
+
+            foreach ($archivos as $archivo) {
+                $archivo = trim($archivo, " \t\n\r\0\x0B\"[]");
+
+                if (strtolower(pathinfo($archivo, PATHINFO_EXTENSION)) !== 'pdf') continue;
+
+                $filePath = public_path('uploads/' . $archivo);
+                if (!file_exists($filePath)) continue;
+
+                // ✅ Datos para el nombre
+                $guia  = $exp->programacion?->guia_remision ?? 'SIN-GUIA';
+                $placa = $exp->programacion?->unidad?->placa_tracto ?? 'SIN-PLACA';
+
+                if ($exp->programacion?->fecha_programacion) {
+                    $fecha = \Carbon\Carbon::parse($exp->programacion->fecha_programacion)->format('Y-m-d');
+                } elseif ($exp->tisur?->fecha_hora_ingreso) {
+                    $fecha = \Carbon\Carbon::parse($exp->tisur->fecha_hora_ingreso)->format('Y-m-d');
+                } else {
+                    $fecha = 'SIN-FECHA';
+                }
+
+                // ✅ Nombre final
+                $nuevoNombre = "Guia Remision - {$guia} - {$placa} - {$fecha}.pdf";
+
+                $zip->addFile($filePath, $nuevoNombre);
+                $archivosAgregados++;
+            }
+        }
+
+        $zip->close();
+
+        if ($archivosAgregados === 0 || !file_exists($zipPath)) {
+            if (file_exists($zipPath)) unlink($zipPath);
+            return back()->with('error', 'No se encontraron facturas válidas.');
+        }
+
+        return response()->download($zipPath, $zipFileName)->deleteFileAfterSend(true);
     }
 
 }

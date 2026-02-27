@@ -9,6 +9,10 @@ class Expediente extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'archivo' => 'array', // ✅ Agrega esto si no está
+    ];
+
     protected $fillable = [
         'programacion_id',
         'tisur_id',

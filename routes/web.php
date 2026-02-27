@@ -87,7 +87,8 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('tisur', TisurController::class)->except(['show']);
         
         // 馃敼 Ruta AJAX para obtener datos de Programaci贸n por ID
-        Route::get('expediente/archivo/{archivo}',[ExpedienteController::class, 'verArchivo'])->name('expediente.archivo');
+        // Route::get('expediente/archivo/{archivo}',[ExpedienteController::class, 'verArchivo'])->name('expediente.archivo');
+        Route::get('expediente/archivo/{archivo}', [ExpedienteController::class, 'verArchivo'])->where('archivo', '.*')->name('expediente.verArchivo');
         Route::get('/expediente/programacion/{id}', [ExpedienteController::class, 'getProgramacion'])->name('expediente.getProgramacion');
         Route::get('/expediente/tisur/{id}', [ExpedienteController::class, 'getTisur']);
         Route::get('/expediente/detalle/{id}', [ExpedienteController::class, 'getDetalle']);
@@ -99,8 +100,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/expedientes/tisur/{id}', [ExpedienteController::class, 'obtenerTisur']);
         Route::patch('expedientes/{expediente}/estado-impresion',[ExpedienteController::class, 'estadoImpresion'])->name('expedientes.estado_impresion');
         Route::get('expediente/export/excel', [ExpedienteController::class, 'exportExcel'])->name('expediente.export');
-
+        //Route::get('expedientes/descargar-facturas', [ExpedienteController::class, 'descargarFacturas'])->name('expedientes.descargar.facturas');
         // Expediente
+        Route::get('/expedientes/facturas/descargar', [ExpedienteController::class, 'descargarFacturas'])->name('expedientes.descargarFacturas');
+        
         Route::resource('expediente', ExpedienteController::class);
 
         // ===============================
