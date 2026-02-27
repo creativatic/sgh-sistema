@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\TisurExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 use App\Models\Tisur;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -183,4 +186,16 @@ class TisurController extends Controller
         $tisur->delete();
         return redirect()->route('tisur.index')->with('success', 'Registro eliminado correctamente.');
     }
+
+    public function exportExcel(Request $request)
+    {
+        return Excel::download(
+            new TisurExport(
+                $request->fecha_inicio,
+                $request->fecha_fin
+            ),
+            'reporte_tisur.xlsx'
+        );
+    }
+
 }

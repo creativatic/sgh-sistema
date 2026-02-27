@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\VolqueteExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 use App\Models\Volquete;
 use App\Models\Proveedor;
 use App\Models\DetalleProgramacion;
@@ -243,6 +246,17 @@ class VolqueteController extends Controller
         ]);
 
         return back()->with('success', 'Estado de impresión actualizado');
+    }
+
+    public function exportExcel(Request $request)
+    {
+        return Excel::download(
+            new VolqueteExport(
+                $request->fecha_inicio,
+                $request->fecha_fin
+            ),
+            'reporte_volquetes.xlsx'
+        );
     }
 
 }

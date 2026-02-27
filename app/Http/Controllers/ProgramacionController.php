@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ProgramacionExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 use App\Models\Programacion;
 use App\Models\DetalleProgramacion;
 use App\Models\Unidad;
@@ -144,8 +147,7 @@ class ProgramacionController extends Controller
         ]);
 
         // Normalizar fecha
-        $validated['fecha_programacion'] = Carbon::parse($validated['fecha_programacion'])
-            ->format('Y-m-d H:i:s');
+        $validated['fecha_programacion'] = $validated['fecha_programacion'];
 
         // Obtener conductor/unidad/proveedor si existe licencia
         if (!empty($validated['licencia'])) {
@@ -217,8 +219,7 @@ class ProgramacionController extends Controller
             'monto_adelanto' => 'nullable|numeric|min:0',
         ]);
 
-        $validated['fecha_programacion'] = Carbon::parse($validated['fecha_programacion'])
-            ->format('Y-m-d H:i:s');
+        $validated['fecha_programacion'] = $validated['fecha_programacion'];
 
         $programacion->update($validated);
 
@@ -349,5 +350,15 @@ class ProgramacionController extends Controller
         return back();
     }
 
+    public function exportExcel(Request $request)
+    {
+        return Excel::download(
+            new ProgramacionExport(
+                $request->fecha_inicio,
+                $request->fecha_fin
+            ),
+            'reporte_programaciones.xlsx'
+        );
+    }
 
 }

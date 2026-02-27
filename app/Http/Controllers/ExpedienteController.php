@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExpedienteExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 use App\Models\Expediente;
 use App\Models\Programacion;
 use App\Models\Tisur;
@@ -519,5 +522,16 @@ class ExpedienteController extends Controller
         return back();
     }
 
+    public function exportExcel(Request $request)
+    {
+        if (!$request->fecha_inicio || !$request->fecha_fin) {
+            return back()->with('error', 'Debe seleccionar un rango de fechas');
+        }
+
+        return Excel::download(
+            new ExpedienteExport($request->fecha_inicio, $request->fecha_fin),
+            'reporte_expedientes.xlsx'
+        );
+    }
 
 }

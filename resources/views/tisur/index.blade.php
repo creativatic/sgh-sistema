@@ -128,6 +128,37 @@
         <div class="mt-3">
             {{ $tisurs->links() }}
         </div>
+
+        <hr class="mt-4">
+
+        <div class="card mt-3">
+            <div class="card-body">
+
+                <form action="{{ route('tisur.export') }}" method="GET">
+                    <div class="row g-2 align-items-end">
+
+                        <div class="col-md-3">
+                            <label class="form-label">Fecha Inicio</label>
+                            <input type="date" name="fecha_inicio" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">Fecha Fin</label>
+                            <input type="date" name="fecha_fin" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-3">
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="ri-file-excel-2-line"></i> Exportar Excel
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
     </div>
 </div>
 

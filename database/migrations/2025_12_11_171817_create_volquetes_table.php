@@ -30,7 +30,6 @@ return new class extends Migration
                   ->nullOnDelete();
 
             $table->foreignId('unidad_id')
-                  ->after('proveedor_id')
                   ->nullable()
                   ->constrained('unidades')
                   ->nullOnDelete();

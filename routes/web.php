@@ -57,6 +57,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/programacions/{programacion}/data', [ProgramacionController::class, 'getData']);
         Route::get('/unidades/{id}/data', [ProgramacionController::class, 'unidadData']);
         Route::patch('/programacions/{id}/conformidad', [ProgramacionController::class, 'conformidad'])->name('programacions.conformidad');
+        Route::get('programacions/export/excel', [ProgramacionController::class, 'exportExcel'])->name('programacions.export');
         Route::resource('programacions', ProgramacionController::class);
 
         
@@ -76,6 +77,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/reportes/qr/export', [ReporteController::class, 'exportQr'])
             ->name('reportes.export_qr');
+
+        Route::get('tisur/export/excel', [TisurController::class, 'exportExcel'])->name('tisur.export');    
         //Route::get('/programacions/reporte-qr', [ProgramacionController::class, 'reporteQr'])->name('programacions.reporte_qr');
         // Detalles
         //Route::resource('detalleprogramacion', DetalleProgramacionController::class)->except(['show']);
@@ -95,6 +98,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/expedientes/autocomplete-tisur', [ExpedienteController::class, 'autocompleteTisur']);
         Route::get('/expedientes/tisur/{id}', [ExpedienteController::class, 'obtenerTisur']);
         Route::patch('expedientes/{expediente}/estado-impresion',[ExpedienteController::class, 'estadoImpresion'])->name('expedientes.estado_impresion');
+        Route::get('expediente/export/excel', [ExpedienteController::class, 'exportExcel'])->name('expediente.export');
 
         // Expediente
         Route::resource('expediente', ExpedienteController::class);
@@ -120,6 +124,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('unidades', UnidadController::class);
         Route::patch('/volquetes/{id}/conformidad',[VolqueteController::class, 'conformidad'])->name('volquetes.conformidad');
         Route::patch('/volquetes/{id}/estado-impresion', [VolqueteController::class, 'estadoImpresion'])->name('volquetes.estado_impresion');
+        Route::get('volquetes/export/excel',[VolqueteController::class, 'exportExcel'])->name('volquetes.export');
 
         Route::resource('volquetes', VolqueteController::class);
         

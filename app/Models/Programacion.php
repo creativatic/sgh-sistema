@@ -11,6 +11,13 @@ class Programacion extends Model
 
     protected $table = 'programacions';
 
+    protected $casts = [
+        'fecha_programacion' => 'datetime',
+        'fecha_pago_adelantos' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     protected $fillable = [
         'fecha_programacion',
         'guia_remision',

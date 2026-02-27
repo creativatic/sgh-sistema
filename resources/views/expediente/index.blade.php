@@ -181,6 +181,30 @@
         <div class="d-flex justify-content-center mt-3">
             {{ $programaciones->links() }}
         </div>
+        <hr>
+
+        <form action="{{ route('expediente.export') }}" method="GET">
+            <div class="row g-2 align-items-end">
+
+                <div class="col-md-3">
+                    <label class="form-label">Fecha Inicio</label>
+                    <input type="date" name="fecha_inicio" class="form-control" required>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Fecha Fin</label>
+                    <input type="date" name="fecha_fin" class="form-control" required>
+                </div>
+
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="ri-file-excel-2-line"></i> Exportar Excel
+                    </button>
+                </div>
+
+            </div>
+        </form>
+
     </div>
 </div>
 
